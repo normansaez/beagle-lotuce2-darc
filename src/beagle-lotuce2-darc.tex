@@ -1,0 +1,215 @@
+%  article.tex (Version 3.3, released 19 January 2008)
+%  Article to demonstrate format for SPIE Proceedings
+%  Special instructions are included in this file after the
+%  symbol %>>>>
+%  Numerous commands are commented out, but included to show how
+%  to effect various options, e.g., to print page numbers, etc.
+%  This LaTeX source file is composed for LaTeX2e.
+
+%  The following commands have been added in the SPIE class 
+%  file (spie.cls) and will not be understood in other classes:
+%  \supit{}, \authorinfo{}, \skiplinehalf, \keywords{}
+%  The bibliography style file is called spiebib.bst, 
+%  which replaces the standard style unstr.bst.  
+
+\documentclass[]{spie}  %>>> use for US letter paper
+%%\documentclass[a4paper]{spie}  %>>> use this instead for A4 paper
+%%\documentclass[nocompress]{spie}  %>>> to avoid compression of citations
+%% \addtolength{\voffset}{9mm}   %>>> moves text field down
+%% \renewcommand{\baselinestretch}{1.65}   %>>> 1.65 for double spacing, 1.25 for 1.5 spacing 
+%  The following command loads a graphics package to include images 
+%  in the document. It may be necessary to specify a DVI driver option,
+%  e.g., [dvips], but that may be inappropriate for some LaTeX 
+%  installations. 
+\usepackage[]{graphicx}
+\usepackage{epstopdf}
+
+\title{Using DARC in a Multi-Objet AO Bench and in a Dome Seeing Instrument}
+
+%>>>> The author is responsible for formatting the 
+%  author list and their institutions.  Use  \skiplinehalf 
+%  to separate author list from addresses and between each address.
+%  The correspondence between each author and his/her address
+%  can be indicated with a superscript in italics, 
+%  which is easily obtained with \supit{}.
+
+\author{Norman S\'aez$\supit{a}^{*}$, Alastair Basden\supit{b}, Dani Guzm\'an\supit{a}, Nicol\'as Dubost\supit{a}
+\skiplinehalf
+\supit{a}Pontificia Universidad Cat\'olica de Chile, Centre for Astro-Engineering, Av.Vicu\~na Mackenna 4860, Santiago, Chile\\
+\supit{b}University of Durham, Department of Physics, Centre for Advanced Instrumentation, South Road, Durham DH1 3LE, UK\\ $*$nfsaez@uc.cl
+%\supit{b}Affiliation2, Address, City, Country
+}
+
+%>>>> Further information about the authors, other than their 
+%  institution and addresses, should be included as a footnote, 
+%  which is facilitated by the \authorinfo{} command.
+
+\authorinfo{Further author information: Norman S\'aez: E-mail: nfsaez@uc.cl}
+%%>>>> when using amstex, you need to use @@ instead of @
+ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%>>>> uncomment following for page numbers
+% \pagestyle{plain}    
+%>>>> uncomment following to start page numbering at 301 
+%\setcounter{page}{301} 
+ 
+  \begin{document} 
+  \maketitle 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{abstract}
+The Durham adaptive Optics Real Time Controller (DARC)\cite{basden2010durham} is a real-time system
+for astronomical adaptive optics systems originally developed at Durham
+University and in use for the CANARY instrument. One of its main strengths is
+to be a generic and high performance real-time controller running on a
+off-the-shelf Linux computer. DARC is an open-source project. We are using DARC
+for two different implementations: BEAGLE, a Multi-Object AO (MOAO) bench
+system to experiment with novel tomographic reconstructors and LOTUCE2, an
+in-dome turbulence instrument. We present the software architecture for each
+application, current benchmarks and lessons learned for current and future DARC
+developers.
+\end{abstract}
+
+%>>>> Include a list of keywords after the abstract 
+
+\keywords{DARC, Adaptive Optics,  Multi-Object Adaptive Optics, Charge Coupled Device}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+\label{sec:intro}  % \label{} allows reference to this section
+The Durham adaptive Optics Real Time Controller (DARC) is a real-time system
+for astronomical adaptive optics systems originally developed at Durham
+University and in use for the CANARY instrument. One of its main strengths is
+to be a generic and high performance real-time controller running on a
+off-the-shelf Linux computer. It was developed in a modular way making it
+flexible enough to simple or sophisticated AO instruments. Very importantly,
+DARC is an open-source project. Taking advantage of it modularization degree,
+it is possible to implement different AO algorithms as well as different pieces
+of hardware, such as cameras for wavefront sensors (WFS) and deformable
+mirrors. As it is a standard Linux application, it is possible to take
+advantage of external components which can be interfaced in Linux, such as
+Firewire or GigE cameras. For new components, it is always possible to build a
+Linux driver and Application Program Interface that can control the device.
+DARC uses current multi-core technologies efficiently, performing at speeds
+that were only possible to achieve with complex architectures in the past\cite{basden2012durham}. 
+We are using DARC for two different implementations: BEAGLE and LOTUCE2. BEAGLE
+(presented elsewhere at this conference) is a Multi-Object AO (MOAO) bench
+system to experiment with novel tomographic reconstructors, such as Artificial
+Neural Networks. For BEAGLE we have developed a new module within DARC, which
+runs the bench in ``multiple WFS'' mode, by controlling a constellation of light
+sources, three phase plates mechanisms and only one WFS camera. DARC runs this
+system in conjunction with a Single Board Computer which is in charge of some
+of the hardware components. LOTUCE2 (presented elsewhere at this conference) is
+an in-dome turbulence instrument, which measures the angle-of-arrival of
+multiple lasers to individual high-speed cameras. DARC has been used to run
+four cameras, which have in-sync hardware trigger. DARC processes the pixel
+streams, obtaining the angle-of-arrival from each camera, saving data to disk
+and performing various analysis in real-time. We present the software
+architecture for each application, current benchmarks and lessons learned for
+current and future DARC developers.
+
+\subsection{BEAGLE}
+BEAGLE is a Multi-Object AO (MOAO) bench that can emulate the optical
+characteristics of the William Hershel Telescope, it has two motorized phase
+plates which allow change the position of the plate scale. DARC, a real-time
+system for astronomical adaptive optics systems, is beeing used to control
+acquisition images. Extra development was necessary integrate specific hardware
+devices component which represents phase plate movement and guide stars. The
+main features which DARC provides and BEAGLE uses are the centroid calculation
+in real-time\cite{basden2012wavefront}, and camera control for Firewire
+protocol. It was pending create such a way to controls new peripherals involved
+to make BEAGLE works. Toward that objective, a single board computer was used.
+The selected single board computer was a BeagleBone Back (BBB). The challenge
+of integrating DARC with new the single board computer was relative simple, and
+relays on a local area network (TCP/IP connectivity) and scripting language
+glue. 
+
+
+\subsection{Lotuce2}
+Lotuce (LOcal Turbulence Experiement)\cite{ziad1a2013lotuce} is an experimental
+concept to mesure and characterized the optical-turbulence inside a telescope
+enclosureor has been developed\cite{berdja1afirst}. LOTUCE2 is an upgraded
+prototype whose main aim is to measure optical turbulence characteristics more
+precisely by minimising cross-contamination of signals. This characterisation
+is both quantitative (optical turbulence strength) and qualitative (assessing
+the optical turbulence statistical model). 
+% in order to measure and characterize the so-called dome-seeing.
+
+
+\section{Software Architecture}\label{sec:SWA} 
+
+%%-------------
+%   \begin{figure}[!ht]
+%   \begin{center}
+%   \begin{tabular}{c}
+%   \includegraphics[height=1.8cm]{../img/reg-tests-workflow-2.png}
+%   \end{tabular}
+%   \end{center}
+%   \caption[workflow] 
+%%>>>> use \label inside caption to get Fig. number with \ref{}
+%   { \label{fig:reg-tests-workflow} 
+%Current structure of the Regression Tests Procedure}
+%   \end{figure} 
+%%-------------
+
+
+%\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Benchmarks} \label{sec:benchmarks}
+\subsection{BEAGLE}
+\subsection{Lotuce2}
+
+%%-------------
+%   \begin{figure}[!ht]
+%   \begin{center}
+%   \begin{tabular}{c}
+%   \includegraphics[height=10cm]{../img/casa-reduction.png}
+%   \end{tabular}
+%   \end{center}
+%   \caption[casa] 
+%%>>>> use \label inside caption to get Fig. number with \ref{}
+%   { \label{fig:casa-reduction} 
+%Example of fringe pattern validation by using CASA off-line tool.}
+%   \end{figure} 
+%%-------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Lesson Learned} \label{sec:LL}
+\subsection{BEAGLE}
+\subsection{Lotuce2}
+
+%%-------------
+%   \begin{figure}[!ht]
+%   \begin{center}
+%   \begin{tabular}{c}
+%   \includegraphics[height=9cm]{../img/UMLmodel.png}
+%   \end{tabular}
+%   \end{center}
+%   \caption[uml] 
+%%>>>> use \label inside caption to get Fig. number with \ref{}
+%   { \label{fig:UMLmodel} 
+%UML diagram of the Automatic Regression Testing framework.}
+%   \end{figure} 
+%%-------------
+
+
+%\newpage
+\section{Conclusions}
+
+%\appendix    %>>>> this command starts appendixes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\acknowledgments     %>>>> equivalent to \section*{ACKNOWLEDGMENTS}       
+ 
+%[...]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% References %%%%%
+
+\newpage
+\acknowledgments{Hi}
+\bibliography{report}   %>>>> bibliography data in report.bib
+\bibliographystyle{spiebib}   %>>>> makes bibtex use spiebib.bst
+
+\end{document} 

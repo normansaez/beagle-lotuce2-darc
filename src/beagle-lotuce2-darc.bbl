@@ -1,0 +1,27 @@
+\begin{thebibliography}{1}
+
+\bibitem{basden2010durham}
+Basden, A., Geng, D., Myers, R., and Younger, E., ``Durham adaptive optics
+  real-time controller,'' {\em Applied optics}~{\bf 49}(32),  6354--6363
+  (2010).
+
+\bibitem{basden2012durham}
+Basden, A. and Myers, R., ``The durham adaptive optics real-time controller:
+  Capability and elt suitability,'' {\em arXiv preprint arXiv:1205.4532}
+  (2012).
+
+\bibitem{basden2012wavefront}
+Basden, A., Myers, R., and Gendron, E., ``Wavefront sensing with a brightest
+  pixel selection algorithm,'' {\em Monthly Notices of the Royal Astronomical
+  Society}~{\bf 419}(2),  1628--1636 (2012).
+
+\bibitem{ziad1a2013lotuce}
+Ziad1a, A., Ali, W.~D., Borgnino, J., Sarazin, M., and Buzzoni, B., ``Lotuce: A
+  new monitor for turbulence characterization inside telescope’s dome,''
+  (2013).
+
+\bibitem{berdja1afirst}
+Berdja1a, A., Osborn, J., Sarazin, M., Ali, W.~D., and Ziad, A., ``First
+  results on dome turbulence characterisation using the lotuce prototype,''
+
+\end{thebibliography}
