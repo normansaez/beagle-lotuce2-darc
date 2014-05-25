@@ -1,0 +1,38 @@
+BEAGLE is being controlled by The Durham adaptive Optics Real
+TimeController(DARC). DARC is a real-time system for astronomical adaptive
+optics systems originally developed at Durham University and in use for the
+CANARYinstrument. At this moment, we are using DARC to control acquisition
+images.Extra development was necessary integrate specific hardware devices
+component.BEAGLE has to integrate phase screens movements and laser star
+guides.The main features which DARC provides and BEAGLE uses are the centroid
+calculation in real time, and the camera control for Firewire protocol. It was
+pending create such a way to controls new peripherals involved to make BEAGLE
+works.Toward that objective, a single board computer was used. The selected
+single board computer was a BeagleBone Back (BBB). It was chosen due low cost
+HW, Linuxembedded, network connectivity, a huge amount of GPIO. The challenge of
+integrating DARC with new the single board computer was relative simple, and
+relays on a local network (TCP/IP connectivity). As  DARC, omniORB was installed
+in the BBB; this allows develop a CORBA server, which controls most of the
+peripherals. Real time software is not required in BBB, due the way of the
+acquisition methods.  For the BBB CORBA server, Python language was used.
+
+
+  BBB Server communicates with GPIO of BBB that are connected to motors and
+  leds (phase screen and stars respectively). The performance on motors  wasn't
+  good enough using Python libraries. To improves performance issue, a  C-Python
+  extension was developed. This increase phase screen movement speed.  The
+  extension C-Python extension allows to use Python server importing native  it,
+  controlling GPIO directly.
+    Using BBB CORBA server and taking advantage of CORBA server provided in
+    DARC,  it was relative easy make both pieces of software work together. DARC
+    was  installed in a powerful machine called RTCAOLAB, and uses the exposed
+    methods  of BBB, controlling all HW in a single machine, even tough that
+    each  peripheral is connected to different machines.  Figure [XXX] shows
+    architecture used to controls peripherals in BBB  Server, and how RCTAOLAB
+    communicates with BBB.
+      
+    The method developed exposed briefly here, has a positive impact in future
+    improvements. The server, calibration scripts, acquisition scripts and GUIs
+    are disengaged enough to change the BBB with another single board computer
+    with no significant impact, just adapting a few specific low level software
+    layers for the new board.
