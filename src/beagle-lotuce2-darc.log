@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/MacPorts 2013_5) (format=pdflatex 2014.3.16)  25 MAY 2014 23:43
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/MacPorts 2013_5) (format=pdflatex 2014.3.16)  26 MAY 2014 09:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -170,14 +170,14 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 File: ../img/physical_layout.jpg Graphic file (type jpg)
 
 <use ../img/physical_layout.jpg>
-Package pdftex.def Info: ../img/physical_layout.jpg used on input line 182.
+Package pdftex.def Info: ../img/physical_layout.jpg used on input line 184.
 (pdftex.def)             Requested size: 422.44627pt x 113.81102pt.
 
 <../img/class_model2.png, id=16, 657.95813pt x 443.40656pt>
 File: ../img/class_model2.png Graphic file (type png)
 
 <use ../img/class_model2.png>
-Package pdftex.def Info: ../img/class_model2.png used on input line 200.
+Package pdftex.def Info: ../img/class_model2.png used on input line 203.
 (pdftex.def)             Requested size: 379.9996pt x 256.0748pt.
  [2] [3 <../img/physical_layout.jpg> <../img/class_model2.png>]
 <../img/physical_layout_lotuce.png, id=23, 410.2828pt x 220.57407pt>
@@ -185,18 +185,18 @@ File: ../img/physical_layout_lotuce.png Graphic file (type png)
 
 <use ../img/physical_layout_lotuce.png>
 Package pdftex.def Info: ../img/physical_layout_lotuce.png used on input line 2
-59.
+65.
 (pdftex.def)             Requested size: 317.55896pt x 170.71652pt.
 
 <../img/step2b.png, id=24, 578.16pt x 433.62pt>
 File: ../img/step2b.png Graphic file (type png)
  <use ../img/step2b.png>
-Package pdftex.def Info: ../img/step2b.png used on input line 278.
+Package pdftex.def Info: ../img/step2b.png used on input line 285.
 (pdftex.def)             Requested size: 227.62523pt x 170.71652pt.
 
-[4 <../img/physical_layout_lotuce.png>]
+[4 <../img/physical_layout_lotuce.png>] [5 <../img/step2b.png>] [6]
 (/Users/nsaez/Dropbox/SPIE2014/beagle-lotuce2-darc/src/beagle-lotuce2-darc.bbl)
-[5 <../img/step2b.png>]
+[7]
 (/Users/nsaez/Dropbox/SPIE2014/beagle-lotuce2-darc/src/beagle-lotuce2-darc.aux)
  ) 
 Here is how much of TeX's memory you used:
@@ -206,21 +206,22 @@ Here is how much of TeX's memory you used:
  4923 multiletter control sequences out of 15000+600000
  9202 words of font info for 32 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 43i,12n,23p,390b,345s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,11n,23p,390b,341s stack positions out of 5000i,500n,10000p,200000b,80000s
 </opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></o
 pt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></opt/lo
-cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/local/sh
-are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/local/share/te
-xmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></opt/local/share/texmf-tex
-live/fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/local/share/texmf-texlive/fo
-nts/type1/public/amsfonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmsy8.pfb></opt/local/share/texmf-texlive/fonts/type1/p
-ublic/amsfonts/cm/cmti10.pfb></opt/local/share/texmf-texlive/fonts/type1/public
-/amsfonts/cm/cmti9.pfb>
-Output written on beagle-lotuce2-darc.pdf (5 pages, 239306 bytes).
+cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></opt/local/s
+hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/local/share/t
+exmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/local/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></opt/local/share/texmf-texlive/
+fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/local/share/texmf-texlive/fonts/t
+ype1/public/amsfonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive/fonts/type1/
+public/amsfonts/cm/cmsy8.pfb></opt/local/share/texmf-texlive/fonts/type1/public
+/amsfonts/cm/cmti10.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmti9.pfb>
+Output written on beagle-lotuce2-darc.pdf (7 pages, 251111 bytes).
 PDF statistics:
- 66 PDF objects out of 1000 (max. 8388607)
- 43 compressed objects within 1 object stream
+ 78 PDF objects out of 1000 (max. 8388607)
+ 52 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
