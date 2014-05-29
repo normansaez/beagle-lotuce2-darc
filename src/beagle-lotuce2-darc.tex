@@ -23,7 +23,7 @@
 %  installations. 
 \usepackage[]{graphicx}
 \usepackage{epstopdf}
-
+\usepackage{url}
 \title{Using DARC in a Multi-Object AO Bench and in a Dome Seeing Instrument}
 
 %>>>> The author is responsible for formatting the 
@@ -33,10 +33,11 @@
 %  can be indicated with a superscript in italics, 
 %  which is easily obtained with \supit{}.
 
-\author{Norman S\'aez$\supit{a}^{*}$, Alastair Basden\supit{b}, Dani Guzm\'an\supit{a}, Nicol\'as Dubost\supit{a}
+\author{Norman S\'aez$\supit{a}\supit{b}^{*}$, Alastair Basden\supit{c}, Dani Guzm\'an\supit{a}\supit{b}, Nicol\'as Dubost\supit{a}\supit{b}, Amokrane Berdja\supit{a}\supit{b}
 \skiplinehalf
 \supit{a}Pontificia Universidad Cat\'olica de Chile, Centre for Astro-Engineering, Av.Vicu\~na Mackenna 4860, Santiago, Chile\\
-\supit{b}University of Durham, Department of Physics, Centre for Advanced Instrumentation, South Road, Durham DH1 3LE, UK\\ $*$nfsaez@uc.cl
+\supit{b}Dept. of Electrical Engineering, Pontificia Universidad CatÃ\'olica, Santiago, Chile \\
+\supit{c}University of Durham, Department of Physics, Centre for Advanced Instrumentation, South Road, Durham DH1 3LE, UK\\ $*$nfsaez@uc.cl
 %\supit{b}Affiliation2, Address, City, Country
 }
 
@@ -63,12 +64,11 @@ The Durham adaptive Optics Real Time Controller (DARC)\cite{basden2010durham}
 is a real-time system for astronomical adaptive optics systems originally
 developed at Durham University and in use for the CANARY instrument. One of its
 main strengths is to be a generic and high performance real-time controller
-running on an off-the-shelf Linux computer. DARC is an open-source project. We
-are using DARC for two different implementations: BEAGLE, a Multi-Object AO
-(MOAO) bench system to experiment with novel tomographic reconstructors and
-LOTUCE2, an in-dome turbulence instrument. We present the software architecture
-for each application, current benchmarks and lessons learned for current and
-future DARC developers.
+running on an off-the-shelf Linux computer. We are using DARC for two different
+implementations: BEAGLE\cite{beagle2014}, a Multi-Object AO (MOAO) bench system to experiment
+with novel tomographic reconstructors and LOTUCE2\cite{lotuce22014}, an in-dome turbulence
+instrument. We present the software architecture for each application, current
+benchmarks and lessons learned for current and future DARC developers.
 \end{abstract}
 
 %>>>> Include a list of keywords after the abstract 
@@ -86,7 +86,7 @@ flexible enough for simple or sophisticated AO instruments. Very importantly,
 DARC is an open-source project. Taking advantage of its modularization degree,
 it is possible to implement different AO algorithms as well as different pieces
 of hardware, such as cameras for wavefront sensors (WFS) and deformable
-mirrors. As it is a standard Linux application, it is possible to take
+mirrors (DM). As it is a standard Linux application, it is possible to take
 advantage of external components which can be interfaced in Linux, such as
 fire-wire or GigE cameras. For new components, it is always possible to build a
 Linux driver and Application Program Interface that can control the device.
@@ -102,7 +102,7 @@ system in conjunction with a Single Board Computer which is in charge of some
 of the hardware components. LOTUCE2 (presented elsewhere at this conference) is
 an in-dome turbulence instrument, which measures the angle-of-arrival of
 multiple lasers to individual high-speed cameras. DARC has been used to run
-four cameras, which have in-sync a hardware trigger. DARC processes the pixel
+four cameras, using an in-sync hardware trigger. DARC processes the pixel
 streams, obtaining the angle-of-arrival from each camera, saving data to disk
 and performing various analysis in real-time. We present the software
 architecture for each application, current benchmarks and lessons learned for
@@ -113,16 +113,17 @@ BEAGLE is a Multi-Object AO (MOAO) bench that can emulate the optical
 characteristics of the William Hershel Telescope, it has two motorized phase
 plates which allow to change the position of the plate scale. DARC, a real-time
 system for astronomical adaptive optics systems, is being used to control
-acquisition images. Extra development was necessary in order to integrate specific hardware
-device components which represent phase plate movement and guide stars. The
-main features which DARC provides which BEAGLE uses are the centroid calculation
-in real-time\cite{basden2012wavefront}, and camera control for the fire-wire
-protocol. It was pending to create a way to controls new peripherals
+acquisition images. Extra development was necessary in order to integrate
+specific hardware device components which represent phase plate movement and
+guide stars. DARC's main features that BEAGLE uses are the centroid
+calculation in real-time\cite{basden2012wavefront}, and camera control for the
+fire-wire protocol. It was pending to create a way to controls new peripherals
 to make BEAGLE work. To meet this objective, a single board computer was used.
-The selected single board computer was a Beagle Bone Back (BBB). The challenge
-of integrating DARC with the new single board computer was relatively simple, and
-relied on a local area network (TCP/IP connectivity) and a scripting language
-as glue. 
+The selected single board computer was a Beagle Bone Back\footnote{Beagle Bone
+    Back, url \url{http://beagleboard.org/Products/BeagleBone+Black}} (BBB).
+    The challenge of integrating DARC with the new single board computer was
+    relatively simple, and relied on a local area network (TCP/IP connectivity)
+    and a scripting language as a glue. 
 
 
 \subsection{LOTUCE2}
@@ -138,10 +139,10 @@ is both quantitative (optical turbulence strength) and qualitative (assessing
 
 \section{Software Architecture}\label{sec:SWA} 
 The Durham AO real-time controller (DARC) is composed of several software
-components: The real-time control pipeline (RTCP), control, diagnostic and
+components: the real-time control pipeline (RTCP), control, diagnostic and
 graphical modules, background tasks, and a scripting interface. The RTCP's main
 task is taking data from cameras (WFS) and computing control vectors to be sent
-to deformable mirrors. The control interface allows updates and controls RTCP.
+to deformable mirrors (DM). The control interface allows updates and controls the RTCP.
 The diagnostic module takes the output from the RTCP for debugging purposes.
 Graphical and scripting interfaces allow the user to interact with the whole
 system through the control interface\cite{basden2010durham}.
@@ -157,22 +158,24 @@ single board computer was a Beagle Bone Back (BBB).  The challenge of
 integrating DARC with the new single board computer was relatively simple, and
 relied on a local area network (TCP/IP connectivity) and scripting.  
 
- In order to follow the same paradigms of DARC, an omniORB was installed in
- the BBB. This let to develop a CORBA server, which controls most of the
+ In order to follow the same paradigms of DARC, an omniORB was installed in the
+ BBB, which allowed us to develop a CORBA server, that controls most of the
  peripherals in the BBB. Real time software is not required in the BBB, due to
  acquisition methods.  For the BBB CORBA server, the Python language was used.
- The BBB has general-purpose input/output (GPIO) pins which are connected to
- motors and leds(phase plate and stars respectively). The BBB Server listens to
- requirements, and each requirement controls a specific GPIO pin. The BBB has
- its own python    libraries to controls GPIO pins, and is called adafruit, but
- the    performance on motors  was not good enough.   To improve the behaviour
- a    C-Python extension was developed. The C-Python extension is imported as a
- standard python module and is used in the BBB Server with no significant
- modifications.
+ The BBB has general-purpose input/output (GPIO) pins wired to motors and leds
+ (phase plate and stars respectively). The BBB Server listens to requests,
+ and each request controls a specific GPIO pin. The BBB has
+ its own python libraries to controls GPIO, called Adafruit\footnote{Adafruit's
+     Beagle Bone IO Python Library.
+         \url{https://github.com/adafruit/adafruit-beaglebone-io-python.git}},
+         but the    performance on motors  was not good enough.   To improve
+             the behaviour a  C-Python extension was developed. The C-Python
+             extension is imported as a standard python module and is used in
+             the BBB Server with no significant modifications.
 
 As was explained before, DARC makes it possible to change the system's behaviour
 by using a scripting and a control interface. The BBB Server is able to communicate with
-a host connected to a reachable IP address. Therefore, the communication
+a host connected to a reachable IP address, therefore, the communication
 between DARC and the BBB Server is straightforward. DARC is currently installed in a
 powerful machine called RTCAOLAB; figure [\ref{fig:phy_lay}] shows the physical
 layout. 
@@ -189,12 +192,11 @@ layout.
    \end{figure} 
 %-------------
 
-Using mostly a script interface, it is possible to build an entire class model on
-the top. RTCAOLAB was used as a ``central server'', in this way, setup routines,
+Using mostly a script interface, it is possible to build an entire class model on top. RTCAOLAB was used as a ``central server'', in this way, setup routines,
     calibration scripts, phase plate, guide stars are controlled using only
     this host. From a user point of view, it is completely transparent which host
     is in charge of which device. Figure [\ref{fig:class}] shows the complete class
-    model built on the top.
+    model built on top.
 
 %-------------
    \begin{figure}[!ht]
@@ -204,19 +206,19 @@ the top. RTCAOLAB was used as a ``central server'', in this way, setup routines,
    \end{tabular}
    \end{center}
    \caption[class] 
-   { \label{fig:class} BeagleDarc Class Model. White boxes contain host name where those packages are running.}
+   { \label{fig:class} BeagleDarc Class Model. Each white box, with their respective host name, show the packages running in them}
    \end{figure}
 %-------------
 
 \subsection{LOTUCE2}
-Lotuce (LOcal Turbulence Experiment) is an experimental to measure and
-characterized the optical-turbulence inside a telescope enclosure. LOTUCE2 is
+Lotuce (LOcal Turbulence Experiment) is an instrument to measure and
+characterize the optical-turbulence inside a telescope enclosure. LOTUCE2 is
 an upgraded prototype whose main aim is to measure optical turbulence
 characteristics more precisely by minimizing cross-contamination of signals.
 Initially, Lotuce used a single camera, LOTUCE2 instead  uses four cameras.
-Camera acquisition and slopes calculation are features provided by DARC.
+Camera acquisition and slope calculation are features provided by DARC.
 
-Replicating a software environment was an item to worry about. In order to be
+Replicating a software environment was an item of great concern. In order to be
 confident enough that it was possible to replicate the environment, DARC was
 installed in two different machines. A Mac Book pro Late2011 and a
 Desktop machine are the hosts for DARC's current deployment. Different operating
@@ -225,36 +227,36 @@ Desktop machine used a Fedora 14 Linux kernel 2.6.35.13-91 32 bits architecture.
 The Mac Book pro instead had installed a Linux Ubuntu 13.10 kernel 3.11.0-15
 64bits architecture.  Besides this difference, the behaviour was exactly the
 same. Notice that each kernel is not patched as real time, but it was good
-enough for LOTUCE2 purposes. It is worth to mention that we are using  Mac Book
-pro either Desktop for the following tests with the same results.
+enough for LOTUCE2 purposes. It is worth to mention that we are using either a Mac Book
+Pro or a Desktop for the following tests with the same results.
 
 DARC is highly flexible with each camera protocol, it can handle USB, ieee1394
-cameras (fire-wire cameras) as well as Ethernet Gig protocols. Cameras used a
-two Gigabit Ethernet protocol and a Cisco 3560 was configured to plug all possible
+cameras (fire-wire cameras) as well as Ethernet Gig protocols. The cameras used a
+two Gigabit Ethernet protocol and a Cisco 3560 was configured to connect all available
 cameras. This switch was transparent to DARC for either installation.  
 
 Camera synchronization was a real challenge. The approach taken used an
 external trigger shared among the cameras. The device used to trigger the
-camera acquisition was a single board computer, integrated and
-configurable GPIO pins.  The Beagle Bone Black (BBB) was the selected for these
+camera acquisition was a single board computer, with integrated and
+configurable GPIO pins.  The Beagle Bone Black (BBB) was selected for these
 purposes. The BBB has an ARM Cortex-A8 processor, with a embedded Linux inside.
-The embedded Linux flavour is Ubuntu13.10. 100 [KHz] was the  maximum frequency
-reached when turning on/off the GPIO pin. To improve this situation, a
-programmable real-time unit(PRU) was used.This unit performs embedded tasks
+The embedded Linux flavour is Ubuntu13.10. One hundred kilo hertz (100 [KHz]) was the  maximum frequency
+reached when turning on/off a GPIO pin. To improve this situation, a
+programmable real-time unit (PRU) was used. This unit performs embedded tasks
 that require real-time constraints. PRU is a subsystem of the processor inside
 the BBB. It is an independent CPU with its own memory and instruction set. It
-can run its own program, completely independent of the Linux kernel on the main
+can run its own programs, completely independent of the Linux kernel on the main
 CPU. Using the PRU approach, the BBB could reach a signal frequency of
 200[MHz], meeting LOTUCE2 requirements.
 
-DARC can obtain the data from both cameras in a single stream or each camera in
+DARC can obtain the data from both cameras in a single stream or each camera data in
 a separate stream. If the single stream approach is used, the streams stick one
 next to the other. It is mandatory that each camera protocol has its own driver
 implementation to make it compatible with DARC. Aravis is a library for video
 acquisition which is being used to make the driver work in DARC. Using both
-cameras at the same time (but not at maximum resolution) we are getting results
+cameras at the same time (but not at maximum resolution) we are getting
 up to 200 [fps], which are very promising results. The trigger to obtain images
-with the cameras is working fine but is still under testing.Figure
+with the cameras is working fine but is still under testing. Figure
 [\ref{fig:lpl}] shows the current layout design. Slight modifications are not
 discarded at this time.
 
@@ -271,10 +273,10 @@ discarded at this time.
 %-------------
 
 The main program should be running where DARC is installed (either Mac Book pro
-        or Desktop) and the signal trigger it will be send using TCP/IP
-protocol, arriving at BBB, triggering the acquisition. Some automatic routines
+        or Desktop) and the signal trigger will be sent using the TCP/IP
+protocol, arriving at the BBB, triggering the acquisition. Some automatic routines
 are being implemented, like automatic sub aperture location, ideal image size
-and some graphics plots to help to controls the instrument operations. Image
+and some graphics plots to help to control the instrument operations. Image
 [\ref{fig:step2}] shows a prototype GUI example. Most of the software modules
 and interfaces are still under development.
 
@@ -286,7 +288,7 @@ and interfaces are still under development.
    \end{tabular}
    \end{center}
    \caption[step2] 
-   { \label{fig:step2} LOTUCE2 interface prototype just after adjust sub aperture location (red) and image size (green)}
+   { \label{fig:step2} LOTUCE2 interface prototype just after adjusting the sub aperture location size (red) and image size (green)}
    \end{figure} 
 %-------------
 
@@ -295,75 +297,96 @@ and interfaces are still under development.
 \section{Software Development supported by DARC and Experimental Tests Experience} \label{sec:LL}
 DARC is written in C and Python, which are languages with strengths and
 weaknesses. DARC takes advantage of their strengths making an excellent
-combination; C run-time speed and Python fast develop. Most of the current work
-has been implemented using DARC CORBA control interface, which let us use fast
-scripting development and quick prototypes, through Python. Environment setup,
-          calibration routines, repetitive operation and graphical user
-          interfaces will be described in this section as well as some
-          empirical test experiences.
+combination. Most of the current work
+has been implemented using the DARC control interface, which lets us develop
+scripts and GUI prototypes in a quick way through Python. Environment setup,
+        calibration routines, repetitive operation and graphical user
+        interfaces will be described in this section as well as some empirical
+        test experiences.
 
 \subsection{BEAGLE}
-Before start to obtain data, BEAGLE bench needs to be prepared and calibrated
-properly. Exposure time per each star, background levels, reference centroids
-are fundamental to the right bench operation.
+Before starting to obtain data, BEAGLE bench needs to be prepared and calibrated
+properly. Exposure time for each star, background levels, reference centroids
+are fundamental to the proper bench operation.
 
-In calibration routines, each led (a star) has its own brightest (by
-manufacturer). Because of this each one needs its own exposure time and the
-corresponding background image. Using an iteration process it is possible get
-the best exposure time per each led. Once the best exposure time is reached,
-background image is obtained. Once the above process finish, sub apertures are
-located using correlation through convolution (no turbulence is present). the
+In the calibration routines, each led (a star) has its own brightness (by
+manufacturer). Because of this, each one needs its own exposure time and the
+corresponding background image. Using an iteration process it is possible to get
+the best exposure time per led. Once the best exposure time is reached,
+a background image is obtained. When the above process finishes, sub apertures are
+resolved using correlation through convolution (no turbulence is present). The
 centroid calculations given by DARC can be done after determining all the sub
-apertures. Also DARC is set to consider the $n$ brightest pixels within a sub
-aperture to calculate centroid.\cite{basden2012wavefront} The $n$ number is
-also obtained through iterative process.
+apertures. DARC is also configured to consider the $n$ brightness pixels within a sub
+aperture in order to calculate the centroid.\cite{basden2012wavefront} The $n$ number is
+also obtained through an iterative process.
 
-The acquisition has two operational modes: phase screen move swiftly to a given
-altitude at a regular step and phase screen moves randomly horizontally and
-vertically. Using the second mode, its finds the shortest path to reach the
-random position, in order to keep acquisition time at minimum. In both cases a
-led sequences turn on/off taking images and/or slopes, saving results in fits
-files. All led has it own background, sub aperture location, exposure time and
-reference centroids as mentioned.
+The acquisition has two operational phase screen movement modes: the first one moves swiftly to a given
+altitude at a regular step, and the second one moves randomly, horizontally and
+vertically. Using the second mode, it finds the shortest path to reach the
+random position, in order to keep the acquisition time at a minimum. In both cases
+a turn on/off led runs in a sequences that takes images or slopes, saving results in fits
+files. All leds have their own background, sub aperture location, exposure time and
+reference centroids, as mentioned earlier.
 
-BEAGLE used two ieee1394 cameras simultaneously, and during empirical tests,
-one of them got stuck. We realized that the card which both cameras were
-plugged, it not given the best bandwidth, it was shared. The solution was given
-a dedicated card per each camera which solved the problem.
+BEAGLE uses two ieee1394 cameras simultaneously, but during our empirical
+tests, one of them hung. We realized that both cameras were plugged in the same
+card, not giving the best bandwidth. The solution was to give a dedicated card
+to each camera, which solved this performance problem.
 
 \subsection{LOTUCE2}
-From a software point of view, the challenges which LOTUCE2 does are
-synchronized control of cameras, graphical plotting, speed performance.
-Fortunately, DARC is a good approach overcome them. Even better, it is possible
-expands capabilities and exciting research for the near future.
+From a software point of view, the challenges which LOTUCE2 presents are:
+camera control synchronization, graphical plotting and speed performance.
+Fortunately, DARC is a good solution to overcome them. Even better, it is possible
+to expand its capabilities for a future research.
 
-To have more than one camera acquiring data and getting all information in a
-single stream, helps to handle the image acquisition at high fps. The BBB with
-no PRU capability, it would become showstopper. A bunch scripts are in use to
-test trigger image acquisition. For sure most of them will be integrated to a
-module once everything will be fully tested. 
+In order to have more than one camera acquiring data in a
+single stream, helps to handle the image acquisition at high [fps]. The BBB with
+no PRU capability would have become a showstopper. A set of scripts are in use to
+test the trigger image acquisition. Surely most of these scripts will be integrated in a
+module once everything is fully tested. 
 
-Plotting capabilities which come with DARC are useful to kick off this project.
-Notwithstanding the foregoing, it is possible extend plotting capabilities
-using other programming languages. C++ and Java are under study as a good
-extension. It also under investigation its CORBA implementation (TAO/ACE and
-JacORB). The idea is to get a CORBA object using C++ or Java and use a plotting
-framework, which opens a vast fields of extension possibilities. Until now,
-LOTUCE2 is using Python as prototypes GUI, which meets out purposes.
+The plotting capabilities that come with DARC were useful to kick off this project.
+However, it is possible to extend the plotting capabilities
+using other programming languages; C++ and Java are under study as a good
+extension. We are also investigating CORBA implementations (TAO/ACE and
+JacORB). The idea is to get a CORBA object to use C++ or Java within a plotting
+framework, which opens a vast field of extension possibilities. Until now,
+LOTUCE2 is using Python for the prototype GUIs, which meets our purposes.
 
 As in BEAGLE, correlation through convolution is used to get the sub aperture
 automatically, and also determines the image size. The image size is crucial to
 speed up the frame rate (small image size, big frame rate). Image size also
-impacts directly into the bandwidth. Width current configuration showed at
-[\ref{fig:lpl}], the Ethernet connection arriving at the computer couldn't
-exceed 1[Gbps]. Therefore, it has to be in mind variables such as exposure
-time, image size (pixels) and [fps] desired. The current prototypes are
-good enough to become in the final solution, but could be modified according
+impacts directly the bandwidth. With the current configuration shown in
+[\ref{fig:lpl}], the Ethernet connection arriving at the computer could not
+exceed 1[Gbps]. Therefore, we have to keep in mind variables such as exposure
+time, image size (pixels) and the [fps] desired. The current prototypes meet the expectation to become the final solution, but could be modified according to 
 new requirements.
 
 %XXXXXXXX TEST MPU 
 %XXXXXXXX MVC
 \section{Conclusions}
+Learning DARC for a user may not be smooth at the beginning, but once you start
+to use it, its nomenclature and syntax becomes familiar, and it provided almost
+everything for testing purposes. It is extremely fast and its
+modularity allows to focus on particular problems. It is possible to create top modules using the control interface, and provides the possibility to acquire instances form
+dedicated hosts. It is also possible to use your own implementation of a particular
+algorithm, for example, slope calculation.
+
+DARC is flexible enough to have your own custom environment, adjusting to
+specific hardware. This flexibility has a counterpart; it is complicated to
+check general errors for a particular device; cameras are a good example.
+There are different kinds of cameras, with different communication protocols, and
+different configuration parameters; all of them have similar features, but it is
+hard to build a syntax error tool for each camera model.
+
+The election of which hardware will be connected to the system impacts directly
+in how much time is spent connecting to DARC. An FPGA will take more time to connect
+than a PIC micro-controller, but connecting directly the DARC server to a desktop or
+laptop using TCP/IP is straightforward.
+
+The combination of interpreted and compiled languages allows to take advantage of the
+best of both worlds. According to the experience gained with DARC for the projects mentioned it
+is worth considering for other instruments.
 
 %\appendix    %>>>> this command starts appendixes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -376,7 +399,7 @@ new requirements.
 %%%%% References %%%%%
 
 \newpage
-\acknowledgments{I would like to thank Anton Schemrl and Richard Myers, for their kindly contributions to this article}
+\acknowledgments{I would like to thank Anton Schemrl and Richard Myers, for their kind contributions to this article}
 \bibliography{report}   %>>>> bibliography data in report.bib
 \bibliographystyle{spiebib}   %>>>> makes bibtex use spiebib.bst
 
